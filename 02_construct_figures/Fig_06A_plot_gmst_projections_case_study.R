@@ -10,7 +10,7 @@ library(ggplot2)
 matilda_weighted <- read.csv("data/matilda_weighted.csv")
 anyNA(matilda_weighted) # check for NAs
 
-# Omit NAs from the weighted result 
+# Omit NAs from the weighted result
 matilda_weighted <- na.omit(matilda_weighted)
 
 # Write function to normalize Matilda data to reference period
@@ -83,7 +83,7 @@ plot_gmst <- ggplot(data = gmst_1950_2100) +
   ) +
   scale_color_gradient(low = "lightblue", high = "dodgerblue4", name = "Weights") +
   scale_alpha_continuous(range(c(0, 1))) +
-  labs (x = "Year", y = "Temperature (C)") +
+  labs(x = "Year", y = "Temperature (C)") +
   theme_light() +
   theme(axis.text.x = element_text(size = 8)) +
   guides(alpha = "none") +
@@ -93,12 +93,12 @@ plot_gmst
 
 # save the resulting figure in the "figures" folder - no observed line
 ggsave("figures/figure_06_A.tiff",
-       plot_gmst,
-       device = "tiff",
-       height = 10,
-       width = 13.2,
-       units = "cm",
-       dpi = 300
+  plot_gmst,
+  device = "tiff",
+  height = 10,
+  width = 13.2,
+  units = "cm",
+  dpi = 300
 )
 
 # Add observed CO2 values to aid visualization of most plausible models

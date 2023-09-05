@@ -1,6 +1,8 @@
-# Building figure to showcase score ramp
+# 1 Load Libraries --------------------------------------------------------
 
 library(ggplot2)
+
+# 2 Produce sample data to plot -------------------------------------------
 
 # Producing random score values for the figure
 set.seed(100)
@@ -36,7 +38,9 @@ for (i in data) {
 data$Differences <- abs(data$x - data$y)
 data$Score <- scores
 
-# Figure
+
+# 3 Plot score_ramp example  ----------------------------------------------
+
 score_ramp <- ggplot(data = data, aes(x = Differences, y = Score)) +
   geom_line(color = "dodgerblue",
             linewidth = 1) +
@@ -44,6 +48,7 @@ score_ramp <- ggplot(data = data, aes(x = Differences, y = Score)) +
   theme_light()
 score_ramp
 
+# save figure
 ggsave("figures/figure_03.tiff",
        plot = score_ramp,
        device = "tiff",

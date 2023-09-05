@@ -28,27 +28,27 @@ normalize_temperature <- function(data, reference_start_year, reference_end_year
     year >= reference_start_year &
       year <= reference_end_year
   )
-  
+
   # Calculate the mean values of reference period
   mean_reference_period <- mean(reference_period$value)
-  
+
   # Calculate normalized values for each year in the data set
   ## subtract data values by reference period mean
   normalized_values <- data$value - mean_reference_period
-  
+
   # Create a new data frame with the normalized data
   normalized_data <- data.frame(
     year = data$year,
     adjusted_value = normalized_values
   )
-  
+
   return(normalized_data)
 }
 
 # Normalize Matilda result to 1850-1900 reference period
 data_adjusted <- normalize_temperature(matilda_weighted,
-                                       reference_start_year = 1850,
-                                       reference_end_year = 1900
+  reference_start_year = 1850,
+  reference_end_year = 1900
 )
 
 # Add column for adjusted_values in weighted matilda result.
@@ -72,7 +72,8 @@ metric_result <- lapply(matilda_weighted_split, metric_calc, longterm_metric)
 # Merges the calculated metrics for each run and the weights for each run by the
 # run_number.
 metrics_weighted <- lapply(metric_result, function(df) {
-  merge(df, use_weights, by = "run_number")}) 
+  merge(df, use_weights, by = "run_number")
+})
 
 # 3 Compute Probabilities -------------------------------------------------
 
@@ -156,8 +157,10 @@ probability_plot <- ggplot(
   coord_flip() +
   ggtitle("B)") +
   theme_light() +
-  theme(legend.text = element_text(size = 8),
-        legend.position = "right")
+  theme(
+    legend.text = element_text(size = 8),
+    legend.position = "right"
+  )
 probability_plot
 
 # save resulting figure
@@ -172,12 +175,13 @@ ggsave(
 )
 
 # 4.1 Combining panels for figure 6
-# In order to complete this the plot object for gmst projections (fig. 6A) must 
+# In order to complete this the plot object for gmst projections (fig. 6A) must
 # be loaded in the global environment
 
 # Combine plots with ggarrange
 figure_06 <- ggarrange(plot_gmst, probability_plot,
-                       ncol = 1, nrow = 2)
+  ncol = 1, nrow = 2
+)
 figure_06
 
 # save paneled figure

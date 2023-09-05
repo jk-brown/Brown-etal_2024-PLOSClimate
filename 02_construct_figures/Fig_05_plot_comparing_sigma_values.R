@@ -28,9 +28,11 @@ matilda_subset <- subset(matilda_1k, scenario == "SSP1-1.9")
 # Compute weights (posterior probabilities) across list of Hector results
 # (m_result_split) using observed gmst and the score_bayesian algorithm with the
 # default level of sigma.
-weight1 <- score_runs(matilda_subset,
-                      criterion_gmst_obs(),
-                      score_bayesian)
+weight1 <- score_runs(
+  matilda_subset,
+  criterion_gmst_obs(),
+  score_bayesian
+)
 
 # Merge results so each Hector run in m_result_split is assigned its corresponding
 # weight.
@@ -45,9 +47,10 @@ sd2 <- 2 * sd(matilda:::adjusted_gmst_data$anomaly_C)
 # (m_result_split) using observed gmst and the score_bayesian algorithm with the
 # default level of sigma.
 weight2 <- score_runs(matilda_subset,
-                      criterion_gmst_obs(),
-                      score_bayesian,
-                      sigma = sd2)
+  criterion_gmst_obs(),
+  score_bayesian,
+  sigma = sd2
+)
 
 # Merge results so each Hector run in m_result_split is assigned its corresponding
 # weight.
@@ -58,26 +61,39 @@ rmse_data_weighted_2 <- merge(rmse_data, weight2, by = "run_number")
 # 6.1 Plotting weight decay against RMSE - decay line in blue and models as points
 # Create the first plot with y-axis limits and custom tick labels
 weight_decay <- ggplot() +
-  geom_line(data = rmse_data_weighted_2,
-            aes(x = RMSE,
-                y = weights),
-            color = "red",
-            linewidth = 1) +
+  geom_line(
+    data = rmse_data_weighted_2,
+    aes(
+      x = RMSE,
+      y = weights
+    ),
+    color = "red",
+    linewidth = 1
+  ) +
   geom_point(
     data = rmse_data_weighted_2,
-    aes(x = RMSE,
-        y = weights),
+    aes(
+      x = RMSE,
+      y = weights
+    ),
     size = 3,
-    shape = 1) +
-  geom_line(data = rmse_data_weighted_1,
-            aes(x = RMSE,
-                y = weights),
-            color = "blue",
-            linewidth = 1) +
+    shape = 1
+  ) +
+  geom_line(
+    data = rmse_data_weighted_1,
+    aes(
+      x = RMSE,
+      y = weights
+    ),
+    color = "blue",
+    linewidth = 1
+  ) +
   geom_point(
     data = rmse_data_weighted_1,
-    aes(x = RMSE,
-        y = weights),
+    aes(
+      x = RMSE,
+      y = weights
+    ),
     size = 3,
     shape = 1
   ) +

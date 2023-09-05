@@ -1,13 +1,13 @@
 # 1 Loading packages ------------------------------------------------------
 
-#libraries
+# libraries
 library(ggplot2)
 library(ggpubr)
 library(matilda)
 
 # 2 Run Matilda and weight results ------------------------------------------
 
-# Use unweighted Matilda result to compute weights with each scoring algorithm. 
+# Use unweighted Matilda result to compute weights with each scoring algorithm.
 matilda_result_25 <- read.csv("data/matilda_result_25.csv")
 
 # using score_ramp
@@ -28,24 +28,34 @@ matilda_weighted_sr <- merge(matilda_result_25, weights_sr, by = "run_number")
 matilda_weighted_sb <- merge(matilda_result_25, weights_sb, by = "run_number")
 
 # Plotting CO2 projections for score_ramped results
-plot_score_ramp <- ggplot(subset(matilda_weighted_sr,
-                          year > 1959 & year < 2100
-                          & scenario == "SSP2-4.5")) +
-  geom_line(aes(x = year, y = value,
-                group = run_number,
-                color = weights, 
-                alpha = weights),
-            linewidth = 0.5) +
-  scale_color_gradient(high = "dodgerblue4", low = "lightblue1",
-                       name = "Weight", limits = c(0, 0.11)) +
+plot_score_ramp <- ggplot(subset(
+  matilda_weighted_sr,
+  year > 1959 & year < 2100 &
+    scenario == "SSP2-4.5"
+)) +
+  geom_line(
+    aes(
+      x = year, y = value,
+      group = run_number,
+      color = weights,
+      alpha = weights
+    ),
+    linewidth = 0.5
+  ) +
+  scale_color_gradient(
+    high = "dodgerblue4", low = "lightblue1",
+    name = "Weight", limits = c(0, 0.11)
+  ) +
   scale_alpha_continuous(range = c(0.5, 1)) +
-  geom_line(data = observed_data,
-            aes(year, co2_ppm),
-            color = "red",
-            linewidth = 0.7) +
-  ylab(expression(CO[2]~Concentration~(ppm))) +
+  geom_line(
+    data = observed_data,
+    aes(year, co2_ppm),
+    color = "red",
+    linewidth = 0.7
+  ) +
+  ylab(expression(CO[2] ~ Concentration ~ (ppm))) +
   xlab("Year") +
-  labs(title = "A) score_ramp()") + 
+  labs(title = "A) score_ramp()") +
   theme_light() +
   theme(legend.position = "bottom") +
   guides(alpha = "none")
@@ -59,27 +69,38 @@ ggsave(
   height = 12,
   width = 16,
   units = "cm",
-  dpi = 300)
+  dpi = 300
+)
 
 # Plotting CO2 projections for score_bayesian results
-plot_score_bayesian <- ggplot(subset(matilda_weighted_sb,
-                              year > 1959 & year < 2100
-                              & scenario == "SSP2-4.5")) +
-  geom_line(aes(x = year, y = value,
-                group = run_number,
-                color = weights, 
-                alpha = weights),
-            linewidth = 0.5) +
-  scale_color_gradient(high = "dodgerblue4", low = "lightblue1",
-                       name = "Weight", limits = c(0, 0.11)) +
+plot_score_bayesian <- ggplot(subset(
+  matilda_weighted_sb,
+  year > 1959 & year < 2100 &
+    scenario == "SSP2-4.5"
+)) +
+  geom_line(
+    aes(
+      x = year, y = value,
+      group = run_number,
+      color = weights,
+      alpha = weights
+    ),
+    linewidth = 0.5
+  ) +
+  scale_color_gradient(
+    high = "dodgerblue4", low = "lightblue1",
+    name = "Weight", limits = c(0, 0.11)
+  ) +
   scale_alpha_continuous(range = c(0.5, 1)) +
-  geom_line(data = matilda:::observed_data_co2,
-            aes(year, co2_ppm),
-            color = "red",
-            linewidth = 0.7) +
+  geom_line(
+    data = matilda:::observed_data_co2,
+    aes(year, co2_ppm),
+    color = "red",
+    linewidth = 0.7
+  ) +
   ylab(NULL) +
   xlab("Year") +
-  labs(title = "B) score_bayesian()") + 
+  labs(title = "B) score_bayesian()") +
   theme_light() +
   theme(legend.position = "none") +
   guides(alpha = "none")
@@ -93,16 +114,18 @@ ggsave(
   height = 12,
   width = 16,
   units = "cm",
-  dpi = 300)
+  dpi = 300
+)
 
 
 # 4 Creating paneled figure ----------------------------------------------
 
 # Combine plots with ggarrange
 figure_04 <- ggarrange(plot_score_ramp, plot_score_bayesian,
-                          ncol = 2, nrow = 1, common.legend = T, legend = "right")
+  ncol = 2, nrow = 1, common.legend = T, legend = "right"
+)
 
-# save paneled figure 
+# save paneled figure
 ggsave(
   "figures/figure_04_paneled.tiff",
   figure_04,
@@ -110,4 +133,5 @@ ggsave(
   height = 6.5,
   width = 13.2,
   units = "cm",
-  dpi = 300)
+  dpi = 300
+)

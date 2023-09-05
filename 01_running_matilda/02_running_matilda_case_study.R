@@ -21,7 +21,7 @@ ssp370 <- newcore(system.file("input/hector_ssp370.ini", package = "hector"),
 env_list <- list(ssp119, ssp126, ssp245, ssp370)
 
 # Generate parameters to use for all running the model.
-# Only use one core generate parameter values and replicate in a list. 
+# Only use one core generate parameter values and replicate in a list.
 # This will keep parameter configurations for each scenario identical.
 set.seed(245)
 param_core <- ssp370

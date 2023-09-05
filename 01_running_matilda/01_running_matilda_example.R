@@ -5,23 +5,23 @@ library(matilda)
 
 # SSPs to initiate a Hector instance
 ssp119 <- newcore(system.file("input/hector_ssp119.ini", package = "hector"),
-                  name = "SSP1-1.9"
+  name = "SSP1-1.9"
 )
 ssp126 <- newcore(system.file("input/hector_ssp126.ini", package = "hector"),
-                  name = "SSP1-2.6"
+  name = "SSP1-2.6"
 )
 ssp245 <- newcore(system.file("input/hector_ssp245.ini", package = "hector"),
-                  name = "SSP2-4.5"
+  name = "SSP2-4.5"
 )
 ssp370 <- newcore(system.file("input/hector_ssp370.ini", package = "hector"),
-                  name = "SSP3-7.0"
+  name = "SSP3-7.0"
 )
 
 # Create a list of environments
 env_list <- list(ssp119, ssp126, ssp245, ssp370)
 
 # Generate parameters to use for all running the model.
-# Only use one core generate parameter values and replicate in a list. 
+# Only use one core generate parameter values and replicate in a list.
 # This will keep parameter configurations for each scenario identical.
 set.seed(123)
 param_core <- ssp370
