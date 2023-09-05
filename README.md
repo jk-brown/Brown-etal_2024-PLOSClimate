@@ -4,9 +4,9 @@
 
 **Target Journal**: *PLOS Climate*
 
-Joseph K Brown^*^, Leeya Pressburger, Abigail Snyder, Kalyn Dorheim, Steven J Smith, Claudia Tebaldi, Ben Bond-Lamberty
+Joseph K Brown*, Leeya Pressburger, Abigail Snyder, Kalyn Dorheim, Steven J Smith, Claudia Tebaldi, Ben Bond-Lamberty
 
-^*^ corresponding author: [link](joseph.brown@pnnl.gov)
+*corresponding author: [joseph.brown@pnnl.gov](joseph.brown@pnnl.gov)
 
 ## Absract
 ___
