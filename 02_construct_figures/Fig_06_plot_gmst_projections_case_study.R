@@ -85,17 +85,18 @@ plot_gmst <- ggplot(data = gmst_1950_2100) +
   scale_alpha_continuous(range(c(0, 1))) +
   labs (x = "Year", y = "Temperature (C)") +
   theme_light() +
+  theme(axis.text.x = element_text(size = 8)) +
   guides(alpha = "none") +
   ggtitle("A)") +
   facet_wrap(~scenario)
 plot_gmst
 
 # save the resulting figure in the "figures" folder - no observed line
-ggsave("figures/figure_06_A.png",
+ggsave("figures/figure_06_A.tiff",
        plot_gmst,
-       device = "png",
-       height = 12,
-       width = 24,
+       device = "tiff",
+       height = 10,
+       width = 13.2,
        units = "cm",
        dpi = 300
 )
@@ -109,11 +110,11 @@ plot_gmst_with_obs <- plot_gmst + geom_line(
 plot_gmst_with_obs
 
 # save the resulting figure in the "figures" folder
-ggsave("figures/gmst_with_obs_data.png",
+ggsave("figures/gmst_with_obs_data.tiff",
   plot_gmst_with_obs,
-  device = "png",
-  height = 12,
-  width = 24,
+  device = "tiff",
+  height = 10,
+  width = 13.2,
   units = "cm",
   dpi = 300
 )

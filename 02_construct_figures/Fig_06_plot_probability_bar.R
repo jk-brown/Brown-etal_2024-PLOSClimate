@@ -155,16 +155,38 @@ probability_plot <- ggplot(
   ) +
   coord_flip() +
   ggtitle("B)") +
-  theme_light()
+  theme_light() +
+  theme(legend.text = element_text(size = 8),
+        legend.position = "right")
 probability_plot
 
 # save resulting figure
 ggsave(
-  "figures/figure_06_A.png",
+  "figures/figure_06_B.tiff",
   plot = probability_plot,
-  device = "png",
-  height = 12,
-  width = 24,
+  device = "tiff",
+  height = 8,
+  width = 13.2,
+  units = "cm",
+  dpi = 300
+)
+
+# 4.1 Combining panels for figure 6
+# In order to complete this the plot object for gmst projections (fig. 6A) must 
+# be loaded in the global environment
+
+# Combine plots with ggarrange
+figure_06 <- ggarrange(plot_gmst, probability_plot,
+                       ncol = 1, nrow = 2)
+figure_06
+
+# save paneled figure
+ggsave(
+  "figures/figure_06_paneled.tiff",
+  figure_06,
+  device = "tiff",
+  height = 14,
+  width = 13.2,
   units = "cm",
   dpi = 300
 )

@@ -1,6 +1,7 @@
-# Producing figure of scoring decay for score_bayesian() function
-
+# 1 Loading libraries -----------------------------------------------------
 library(ggplot2)
+
+# 2 Creating sample data for plotting -------------------------------------
 
 # Define a range of RMSE values to plot
 rmse_vals <- seq(0, 15, length.out = 100)
@@ -26,6 +27,9 @@ likelihood_df_long <- reshape2::melt(likelihood_df,
                                      variable.name = "Decay_Rate",
                                      value.name = "likelihood")
 
+
+# 3 Plotting --------------------------------------------------------------
+
 # Plot the likelihood functions
 likelihood_decay <-
   ggplot(likelihood_df_long,
@@ -39,10 +43,10 @@ likelihood_decay <-
   theme_light()
 likelihood_decay
 
-ggsave("figures/figure_02.png",
+ggsave("figures/figure_02.tiff",
        plot = likelihood_decay,
-       device = "png",
+       device = "tiff",
        height = 10,
-       width = 15,
+       width = 13.2,
        units = "cm",
        dpi = 300)

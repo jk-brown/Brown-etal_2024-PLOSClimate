@@ -7,8 +7,10 @@ set.seed(100)
 data <- data.frame(x = runif(600, min = 1, max = 20),
                    y = runif(600, min = 1, max = 20))
 
-# Writing a loop to compute scores based on socre_ramp() from matilda.
-# Want to be able to produce this figure without loading the library.
+# Initialize scores object
+scores <- numeric(length(data$x))
+
+# Writing a loop to compute scores based on score_ramp() from matilda.
 for (i in data) {
   
   # compute abs differences for each index in `data`
@@ -42,10 +44,10 @@ score_ramp <- ggplot(data = data, aes(x = Differences, y = Score)) +
   theme_light()
 score_ramp
 
-ggsave("figures/figure_03.png",
+ggsave("figures/figure_03.tiff",
        plot = score_ramp,
-       device = "png",
+       device = "tiff",
        width = 10,
-       height = 8,
+       height = 10,
        units = c("cm"),
        dpi = 300)

@@ -9,9 +9,12 @@ matilda_1k <- read.csv("data/matilda_1k.csv")
 anyNA(matilda_1k) # check for NAs
 
 # Omit NAs in the matilda_1k data frame
-matilda_1k <- omit.na(matilda_1k)
+matilda_1k <- na.omit(matilda_1k)
 
 # 3 Compute RMSE for SSP126 for Plotting ----------------------------------
+
+# load function needed for computing RMSE data frame
+source("functions/functions_for_analysis.R")
 
 # Creating usable rmse_data to plot
 rmse_data <- RMSE_df(matilda_1k, 1950, 2023)
@@ -86,11 +89,11 @@ weight_decay
 
 # Save the plot
 ggsave(
-  "figures/figure_05.png",
+  "figures/figure_05.tiff",
   weight_decay,
-  device = "png",
-  height = 12,
-  width = 16,
+  device = "tiff",
+  height = 10,
+  width = 10,
   units = "cm",
   dpi = 300
 )

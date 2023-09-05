@@ -47,6 +47,7 @@ plot_score_ramp <- ggplot(subset(matilda_weighted_sr,
   xlab("Year") +
   labs(title = "A) score_ramp()") + 
   theme_light() +
+  theme(legend.position = "bottom") +
   guides(alpha = "none")
 plot_score_ramp
 
@@ -76,10 +77,11 @@ plot_score_bayesian <- ggplot(subset(matilda_weighted_sb,
             aes(year, co2_ppm),
             color = "red",
             linewidth = 0.7) +
-  ylab(expression(CO[2]~Concentration~(ppm))) +
+  ylab(NULL) +
   xlab("Year") +
   labs(title = "B) score_bayesian()") + 
   theme_light() +
+  theme(legend.position = "none") +
   guides(alpha = "none")
 plot_score_bayesian
 
@@ -98,14 +100,14 @@ ggsave(
 
 # Combine plots with ggarrange
 figure_04 <- ggarrange(plot_score_ramp, plot_score_bayesian,
-                          ncol = 2, nrow = 1)
+                          ncol = 2, nrow = 1, common.legend = T, legend = "right")
 
 # save paneled figure 
 ggsave(
-  "figures/figure_04_paneled.png",
+  "figures/figure_04_paneled.tiff",
   figure_04,
-  device = "png",
-  height = 12,
-  width = 24,
+  device = "tiff",
+  height = 6.5,
+  width = 13.2,
   units = "cm",
   dpi = 300)
