@@ -1,3 +1,9 @@
+<!-- badges: start -->
+
+[![DOI](https://zenodo.org/badge/687235003.svg)](https://zenodo.org/badge/latestdoi/687235003)
+
+<!-- badges: end -->
+
 # Brown et al. 2023 
 
 **Matilda v1.0: An R package for probabilistic climate projections using a reduced complexity climate model**
