@@ -1,4 +1,5 @@
 ## Contents:  Code for running a Matilda analysis across a list of SSP scenarios.
+remotes::install_github("jgcri/matilda")
 library(matilda)
 
 # 1 Running iterate_model() across 4 SSPs ------------------------------------
