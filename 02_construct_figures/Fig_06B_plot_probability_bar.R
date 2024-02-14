@@ -14,7 +14,8 @@ anyNA(matilda_weighted) # check for NAs
 matilda_weighted <- na.omit(matilda_weighted)
 
 # Load data frame of weights for ensemble members
-use_weights <- read.csv("data/use_weights.csv")
+weights_df <- read.csv("data/use_weights.csv")
+use_weights <- weights_df
 anyNA(use_weights)
 
 # Omit NAs from the use_weights data frame
