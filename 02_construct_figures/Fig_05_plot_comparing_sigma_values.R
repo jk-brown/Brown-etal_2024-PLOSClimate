@@ -2,114 +2,117 @@
 library(ggplot2)
 library(ggpubr)
 library(matilda)
+library(parallel)
 
-# 2 Load data -------------------------------------------------------------
+# 2 Generate parameters and run model -------------------------------------
 
-matilda_1k <- read.csv("data/matilda_1k.csv")
-anyNA(matilda_1k) # check for NAs
+# initiate hector core
+ssp119 <- newcore(system.file("input/hector_ssp119.ini", package = "hector"),
+                  name = "SSP1-1.9")
 
-# Omit NAs in the matilda_1k data frame
-matilda_1k <- na.omit(matilda_1k)
+# generate parameters
+n = 1000
+set.seed(245)
+params <- generate_params(core, n)
+params_list <- split(params, 1:10)
 
-# 3 Compute RMSE for SSP126 for Plotting ----------------------------------
+# run hector
+cl <- makeCluster(detectCores() - 1)
 
-# load function needed for computing RMSE data frame
-source("functions/functions_for_analysis.R")
+clusterExport(cl, c("ini", "newcore", "iterate_model", "params_list", "options"))
 
-# Creating usable rmse_data to plot
-rmse_data <- RMSE_df(matilda_1k, 1950, 2023)
-rmse_data <- subset(rmse_data, scenario == "SSP1-1.9")
+result <- parLapply(cl, params_list, function(chunk) {
+  
+  options(matilda.verbose = FALSE)
+  
+  core = newcore(ini)
+  
+  iterate_model(core,
+                chunk,
+                save_years = 1950:2023,
+                save_vars = "gmst")
+})
 
-# 4 Weight PPE members w/ score_bayesian(sigma = default) -------------------------------------------------
+# combining results to have continuous run_number
+for (i in 2:length(result)) {
+  # calculate the max value of the previous element in the result list
+  max_run_number <- max(result[[i - 1]]$run_number)
+  # Add the max value of the previous element to the run_number of the current
+  # element to get an updated run_number that is continuous from the previous element.
+  result[[i]]$run_number <- result[[i]]$run_number + max_run_number
+}
 
-# subset Matilda result to include only SSP119
-matilda_subset <- subset(matilda_1k, scenario == "SSP1-1.9")
+# use rbind to bind the dfs in result to make one df of all results
+result_df <- do.call(rbind, result)
+row.names(result_df) <- NULL
 
-# Compute weights (posterior probabilities) across list of Hector results
-# (m_result_split) using observed gmst and the score_bayesian algorithm with the
-# default level of sigma.
-weight1 <- score_runs(
-  matilda_subset,
-  criterion_gmst_obs(),
-  score_bayesian
+# 3 Compute RMSE values for plotting --------------------------------------
+
+# creating a result matrix that can be used in in RMSE_calc
+result_matrix <- hector_matrix(result_df)
+temp_data <- criterion_gmst_obs()$obs_values
+rmse_input_matrix <- cbind(temp_data, result_matrix)
+
+# indicate that observed data are in the first column of the matrix
+obs_data <- rmse_input_matrix[, 1]
+model_data <- rmse_input_matrix[, -1]
+
+# Compute RMSE values for each model
+rmse_vals <- apply(model_data, 2, function(model) RMSE_calc(model, obs_data))
+rmse_vals2 <- apply(model_data, 2, function(model) RMSE_calc(model, obs_data))
+
+# 4 Weight w/ score_bayesian using different sensitivity ------------------
+
+# Compute likelihood for each model
+likelihood <- score_bayesian(rmse_input_matrix, sensitivity = 1)
+likelihood2 <- score_bayesian(rmse_input_matrix, sensitivity = 2)
+
+# 5 Plotting Likelihood vs. RMSE ------------------------------------------
+
+# Create a data frame for plotting
+plot_data <- data.frame(
+  RMSE = rmse_vals,
+  Likelihood = likelihood
 )
 
-# Merge results so each Hector run in m_result_split is assigned its corresponding
-# weight.
-rmse_data_weighted_1 <- merge(rmse_data, weight1, by = "run_number")
-
-# 5 Weight PPE members w/ score_bayesian(sigma = 2 * sd(RMSE)) -------------------------------------------------
-
-# Compute 2 units of standard deviation of the RMSE values
-sd2 <- 2 * sd(matilda:::adjusted_gmst_data$anomaly_C)
-
-# Compute weights (posterior probabilities) across list of Hector results
-# (m_result_split) using observed gmst and the score_bayesian algorithm with the
-# default level of sigma.
-weight2 <- score_runs(matilda_subset,
-  criterion_gmst_obs(),
-  score_bayesian,
-  sigma = sd2
+plot_data2 <- data.frame(
+  RMSE = rmse_vals2,
+  Likelihood = likelihood2
 )
 
-# Merge results so each Hector run in m_result_split is assigned its corresponding
-# weight.
-rmse_data_weighted_2 <- merge(rmse_data, weight2, by = "run_number")
+# Plot RMSE v. Likelihood
+Likelihood_decay <- 
+  ggplot() +
+  geom_line(data = plot_data, 
+            aes(x = RMSE, y = Likelihood), 
+            color = "blue",
+            linewidth = 1) +
+  geom_point(data = plot_data, 
+             aes(x = RMSE, y = Likelihood), 
+             color = "black",
+             shape = 1,
+             size = 2) +
+  geom_line(data = plot_data2, 
+            aes(x = RMSE, y = Likelihood), 
+            color = "red",
+            linewidth = 1) +
+  geom_point(data = plot_data2,
+             aes(x = RMSE, y = Likelihood),
+             color = "black",
+             shape = 1,
+             size = 2) +
+  theme_light()
 
-# 6 Plotting likelihood decay comparison ----------------------------------
-
-# 6.1 Plotting weight decay against RMSE - decay line in blue and models as points
-# Create the first plot with y-axis limits and custom tick labels
-weight_decay <- ggplot() +
-  geom_line(
-    data = rmse_data_weighted_2,
-    aes(
-      x = RMSE,
-      y = weights
-    ),
-    color = "red",
-    linewidth = 1
-  ) +
-  geom_point(
-    data = rmse_data_weighted_2,
-    aes(
-      x = RMSE,
-      y = weights
-    ),
-    size = 3,
-    shape = 1
-  ) +
-  geom_line(
-    data = rmse_data_weighted_1,
-    aes(
-      x = RMSE,
-      y = weights
-    ),
-    color = "blue",
-    linewidth = 1
-  ) +
-  geom_point(
-    data = rmse_data_weighted_1,
-    aes(
-      x = RMSE,
-      y = weights
-    ),
-    size = 3,
-    shape = 1
-  ) +
-  labs(y = "Likelihood") +
-  theme_light() +
-  scale_y_continuous(breaks = seq(0.0002, 0.0015, by = 0.0001))
-# Display the plot
-weight_decay
+# Display plot
+Likelihood_decay
 
 # Save the plot
 ggsave(
   "figures/figure_05.tiff",
-  weight_decay,
+  Likelihood_decay,
   device = "tiff",
   height = 10,
-  width = 10,
+  width = 11,
   units = "cm",
   dpi = 300
 )

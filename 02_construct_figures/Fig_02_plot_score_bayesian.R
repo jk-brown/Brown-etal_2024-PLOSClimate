@@ -3,24 +3,30 @@ library(ggplot2)
 
 # 2 Creating sample data for plotting -------------------------------------
 
+set.seed(123)
+
 # Define a range of RMSE values to plot
-rmse_vals <- seq(0, 15, length.out = 100)
+rmse_vals <- seq(0, 8, length.out = 100)
+
+# Sensitivity Values
+sensitivity_1 = 1
+sensitivity_2 = 2
+sensitivity_3 = 3
+sensitivity_4 = 4
 
 # Compute the likelihood functions for e = 1, 1.5, 2, 3, 5
-likelihood_d1 <- exp(-0.5 * ((rmse_vals) / 1)^2)
-likelihood_d1.5 <- exp(-0.5 * ((rmse_vals) / 1.5)^2)
-likelihood_d2 <- exp(-0.5 * ((rmse_vals) / 2)^2)
-likelihood_d3 <- exp(-0.5 * ((rmse_vals) / 3)^2)
-likelihood_d4 <- exp(-0.5 * ((rmse_vals) / 4)^2)
+likelihood_d1 <- exp(-0.5 * ((rmse_vals) / sensitivity_1 * sd(rmse_vals))^2)
+likelihood_d2 <- exp(-0.5 * ((rmse_vals) / sensitivity_2 * sd(rmse_vals))^2)
+likelihood_d3 <- exp(-0.5 * ((rmse_vals) / sensitivity_3 * sd(rmse_vals))^2)
+likelihood_d4 <- exp(-0.5 * ((rmse_vals) / sensitivity_4 * sd(rmse_vals))^2)
 
 # Combine the likelihood functions into a data frame
 likelihood_df <- data.frame(
   rmse = rmse_vals,
-  "sigma_1" = likelihood_d1,
-  "sigma_1.5" = likelihood_d1.5,
-  "sigma_2" = likelihood_d2,
-  "sigma_3" = likelihood_d3,
-  "sigma_4" = likelihood_d4
+  "Sensitivity = 1" = likelihood_d1,
+  "Sensitivity = 2" = likelihood_d2,
+  "Sensitivity = 3" = likelihood_d3,
+  "Sensitivtiy = 4" = likelihood_d4
 )
 
 # Melt the data frame into long format for plotting
@@ -42,10 +48,10 @@ likelihood_decay <-
   geom_line(linewidth = 1) +
   scale_color_discrete(
     name = "Decay Rate",
-    labels = c("sigma = 1", "sigma = 1.5", "sigma = 2", "sigma = 3", "sigma = 4")
+    labels = c("Sensitivity = 1", "Sensitivity = 2", "Sensitivity = 3", "Sensitivity = 4")
   ) +
   labs(x = "RMSE", y = "Likelihood") +
-  xlim(0, 15) +
+  xlim(0, 7) +
   theme_light()
 likelihood_decay
 
